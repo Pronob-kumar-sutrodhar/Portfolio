@@ -1283,9 +1283,9 @@ a:hover {
     box-shadow: var(--shadow-md);
 }
 
-.sidebar-info { text-align: center; }
+n.sidebar-info { text-align: center; }
 .avatar-box img { border-radius: 50%; display:block; margin: 0 auto; }
-.info-content { margin-top: .75rem; }
+.info_content, .info-content { margin-top: .75rem; }
 .name { font-weight:700; color: var(--color-text); }
 .title { color: var(--color-text-light); font-size: .95rem; }
 .info_more-btn { margin-top: .75rem; background: transparent; border: 1px solid var(--color-border); padding: .5rem; border-radius: var(--radius-sm); cursor: pointer; }
@@ -1373,9 +1373,10 @@ h1, h2, h3 {
 
 .section-title {
     font-size: 2.5rem;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
     display: inline-block;
 }
 

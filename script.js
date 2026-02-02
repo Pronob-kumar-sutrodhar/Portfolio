@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileNavigation();
     initSmoothScrolling();
     initScrollAnimations();
+    initRevealOnScroll();
     initContactForm();
     renderProjects();
     renderSkills();
@@ -782,7 +783,7 @@ function init3DTilt() {
 /* ========================
    3. Scroll Animations
    ======================== */
-function initScrollAnimations() {
+function initRevealOnScroll() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -833,59 +834,6 @@ function startCounters(section) {
     });
 }
 
-/* ========================
-   5. Data Rendering
-   ======================== */
-const projectsData = [
-    { title: 'E-Commerce', desc: 'React & Node full stack app', tech: ['React', 'Node'], icon: '🛒' },
-    { title: 'Task Manager', desc: 'Real-time collaboration tool', tech: ['Vue', 'Firebase'], icon: '✅' },
-    { title: 'Weather App', desc: 'Live forecast dashboard', tech: ['JS', 'API'], icon: '🌤️' },
-    // Add more...
-];
+/* Removed duplicate simplified projects/skills rendering (kept the more detailed implementations earlier). */
 
-function renderProjects() {
-    const grid = document.querySelector('.projects-grid');
-    if(!grid) return;
-    
-    // Add stagger-container class to grid for animations
-    grid.classList.add('stagger-container');
-    
-    grid.innerHTML = projectsData.map((p, index) => `
-        <article class="project-card reveal-child">
-            <div class="project-image">${p.icon}</div>
-            <div class="project-content">
-                <h3 class="project-title">${p.title}</h3>
-                <p class="project-description">${p.desc}</p>
-                <div class="project-tech">
-                    ${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}
-                </div>
-            </div>
-        </article>
-    `).join('');
-}
-
-function renderSkills() {
-    const container = document.querySelector('.skills-container');
-    if(!container) return;
-    container.classList.add('stagger-container', 'reveal-on-scroll');
-    
-    // Simple skills markup
-    const skills = ['HTML5', 'CSS3', 'JavaScript', 'React', 'Node.js', 'Python'];
-    container.innerHTML = skills.map(skill => `
-        <div class="skill-item reveal-child">
-            <span class="skill-name">${skill}</span>
-            <div class="skill-bar"><div class="fill" style="width: 85%"></div></div>
-        </div>
-    `).join('');
-}
-
-/* ========================
-   6. Utilities
-   ======================== */
-// Utilities are implemented above (initTheme, initMobileNavigation, etc.).
-// Keep additional helpers here if needed.
-function initMobileMenu() {
-    // Backwards-compatible alias for older code.
-    // Prefer using initMobileNavigation() which is the main mobile navigation initializer.
-    if (typeof initMobileNavigation === 'function') initMobileNavigation();
-}
+/* Utilities: initTheme and mobile menu handlers are defined earlier to avoid duplicates. */
