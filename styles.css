@@ -44,7 +44,11 @@
     --motion-ease: cubic-bezier(.2,.9,.2,1);
     --motion-quick: 120ms;
     --motion-base: 300ms;
-    --motion-long: 600ms; 
+    --motion-long: 600ms;
+    /* Motion blur tokens */
+    --motion-blur: 6px; /* entrance blur */
+    --motion-blur-subtle: 1px; /* micro blur for hover/interaction */
+    --motion-blur-min: 0.4px; /* very subtle */ 
     
     /* Shadows */
     --shadow-sm: 0 1px 3px var(--color-shadow);
@@ -1027,12 +1031,14 @@ a:hover {
     from {
         opacity: 0;
         transform: translateY(18px) translateZ(0);
+        filter: blur(var(--motion-blur));
     }
     to {
         opacity: 1;
         transform: translateY(0) translateZ(0);
+        filter: none;
     }
-}
+} 
 
 /* Hero entrance */
 .hero-title {
@@ -1097,15 +1103,24 @@ a:hover {
 .stagger .stagger-child {
     opacity: 0;
     transform: translateY(8px);
-    transition: opacity var(--motion-base) var(--motion-ease), transform var(--motion-base) var(--motion-ease);
+    filter: blur(var(--motion-blur));
+    transition: opacity var(--motion-base) var(--motion-ease), transform var(--motion-base) var(--motion-ease), filter var(--motion-base) var(--motion-ease);
     transition-delay: calc(var(--seq, 0) * 120ms + (var(--child, 0) * 80ms));
-    will-change: opacity, transform;
+    will-change: opacity, transform, filter;
 }
 
 .loaded .stagger .stagger-child {
     opacity: 1;
     transform: none;
+    filter: none;
 }
+
+/* Micro blur on interactive hover (subtle) */
+.animate-smooth .btn:hover,
+.animate-smooth .nav-link:hover,
+.animate-smooth .project-card:hover {
+    filter: blur(var(--motion-blur-subtle));
+} 
 
 /* Respect user's reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
@@ -1121,6 +1136,7 @@ a:hover {
         transition: none !important;
         transform: none !important;
         opacity: 1 !important;
+        filter: none !important;
     }
 } 
 
