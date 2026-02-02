@@ -693,3 +693,199 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
         });
     });
 }
+
+
+/* ========================
+   1. Typewriter Effect
+   ======================== */
+class TypeWriter {
+    constructor(txtElement, words, wait = 3000) {
+        this.txtElement = txtElement;
+        this.words = words;
+        this.txt = '';
+        this.wordIndex = 0;
+        this.wait = parseInt(wait, 10);
+        this.type();
+        this.isDeleting = false;
+    }
+
+    type() {
+        const current = this.wordIndex % this.words.length;
+        const fullTxt = this.words[current];
+
+        if(this.isDeleting) {
+            this.txt = fullTxt.substring(0, this.txt.length - 1);
+        } else {
+            this.txt = fullTxt.substring(0, this.txt.length + 1);
+        }
+
+        this.txtElement.innerHTML = `<span class="txt">${this.txt}</span>`;
+
+        let typeSpeed = 200; // Normal typing speed
+
+        if(this.isDeleting) {
+            typeSpeed /= 2; // Delete faster
+        }
+
+        if(!this.isDeleting && this.txt === fullTxt) {
+            typeSpeed = this.wait; // Pause at end
+            this.isDeleting = true;
+        } else if(this.isDeleting && this.txt === '') {
+            this.isDeleting = false;
+            this.wordIndex++;
+            typeSpeed = 500; // Pause before new word
+        }
+
+        setTimeout(() => this.type(), typeSpeed);
+    }
+}
+
+function initTypeWriter() {
+    const txtElement = document.querySelector('.txt-type');
+    const words = JSON.parse(txtElement.getAttribute('data-words'));
+    const wait = txtElement.getAttribute('data-wait');
+    new TypeWriter(txtElement, words, wait);
+}
+
+/* ========================
+   2. 3D Tilt for Cards
+   ======================== */
+function init3DTilt() {
+    // We attach this after projects are rendered
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.project-card');
+        
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Calculate rotation (center is 0,0)
+                const xRotation = -1 * ((y - rect.height/2) / 20); // Rotate X based on Y pos
+                const yRotation = (x - rect.width/2) / 20;   // Rotate Y based on X pos
+                
+                card.style.transform = `
+                    perspective(1000px) 
+                    scale(1.05)
+                    rotateX(${xRotation}deg) 
+                    rotateY(${yRotation}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) scale(1) rotateX(0) rotateY(0)';
+            });
+        });
+    }, 100); // Slight delay to ensure DOM exists
+}
+
+/* ========================
+   3. Scroll Animations
+   ======================== */
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                // Trigger counters if it's the stats section
+                if(entry.target.querySelector('.counter')) {
+                    startCounters(entry.target);
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal-on-scroll, .stagger-container').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+function initScrollProgress() {
+    const bar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        bar.style.width = scrolled + "%";
+    });
+}
+
+/* ========================
+   4. Number Counters
+   ======================== */
+function initCounters() {
+    // Wrapper function called by observer
+}
+
+function startCounters(section) {
+    const counters = section.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const increment = target / 50; // speed
+
+        if(count < target) {
+            counter.innerText = Math.ceil(count + increment);
+            setTimeout(() => startCounters(section), 30);
+        } else {
+            counter.innerText = target + "+";
+        }
+    });
+}
+
+/* ========================
+   5. Data Rendering
+   ======================== */
+const projectsData = [
+    { title: 'E-Commerce', desc: 'React & Node full stack app', tech: ['React', 'Node'], icon: '🛒' },
+    { title: 'Task Manager', desc: 'Real-time collaboration tool', tech: ['Vue', 'Firebase'], icon: '✅' },
+    { title: 'Weather App', desc: 'Live forecast dashboard', tech: ['JS', 'API'], icon: '🌤️' },
+    // Add more...
+];
+
+function renderProjects() {
+    const grid = document.querySelector('.projects-grid');
+    if(!grid) return;
+    
+    // Add stagger-container class to grid for animations
+    grid.classList.add('stagger-container');
+    
+    grid.innerHTML = projectsData.map((p, index) => `
+        <article class="project-card reveal-child">
+            <div class="project-image">${p.icon}</div>
+            <div class="project-content">
+                <h3 class="project-title">${p.title}</h3>
+                <p class="project-description">${p.desc}</p>
+                <div class="project-tech">
+                    ${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function renderSkills() {
+    const container = document.querySelector('.skills-container');
+    if(!container) return;
+    container.classList.add('stagger-container', 'reveal-on-scroll');
+    
+    // Simple skills markup
+    const skills = ['HTML5', 'CSS3', 'JavaScript', 'React', 'Node.js', 'Python'];
+    container.innerHTML = skills.map(skill => `
+        <div class="skill-item reveal-child">
+            <span class="skill-name">${skill}</span>
+            <div class="skill-bar"><div class="fill" style="width: 85%"></div></div>
+        </div>
+    `).join('');
+}
+
+/* ========================
+   6. Utilities
+   ======================== */
+// Utilities are implemented above (initTheme, initMobileNavigation, etc.).
+// Keep additional helpers here if needed.
+function initMobileMenu() {
+    // Backwards-compatible alias for older code.
+    // Prefer using initMobileNavigation() which is the main mobile navigation initializer.
+    if (typeof initMobileNavigation === 'function') initMobileNavigation();
+}
