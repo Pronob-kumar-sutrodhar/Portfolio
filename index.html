@@ -36,26 +36,29 @@
                 </ul>
                 
                 <div class="nav-actions">
-                    <button class="theme-toggle" aria-label="Toggle theme">
-                        <span class="theme-icon sun">☀️</span>
-                        <span class="theme-icon moon">🌙</span>
-                    </button>
-                    <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
-                        <span class="hamburger"></span>
-                    </button>
+                  <button class="theme-toggle" aria-label="Toggle theme" data-tooltip="Switch Theme">
+                      <span class="theme-icon sun">☀️</span>
+                      <span class="theme-icon moon">🌙</span>
+                  </button>
+
+                  <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" data-tooltip="Menu">
+                      <span class="hamburger"></span>
+                  </button>
                 </div>
             </nav>
         </div>
         
-        <div class="mobile-nav">
-             <ul class="mobile-nav-list">
-                <li><a href="#home" class="mobile-nav-link">Home</a></li>
-                <li><a href="#about" class="mobile-nav-link">About</a></li>
-                <li><a href="#projects" class="mobile-nav-link">Projects</a></li>
-                <li><a href="#skills" class="mobile-nav-link">Skills</a></li>
-                <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
-            </ul>
-        </div>
+<div class="mobile-nav" id="mobile-nav">
+    <button class="close-menu" aria-label="Close menu">&times;</button>
+    
+    <ul class="mobile-nav-list">
+        <li style="--i: 1"><a href="#home" class="mobile-nav-link">Home</a></li>
+        <li style="--i: 2"><a href="#about" class="mobile-nav-link">About</a></li>
+        <li style="--i: 3"><a href="#projects" class="mobile-nav-link">Projects</a></li>
+        <li style="--i: 4"><a href="#skills" class="mobile-nav-link">Skills</a></li>
+        <li style="--i: 5"><a href="#contact" class="mobile-nav-link">Contact</a></li>
+    </ul>
+</div>
     </header>
 
     <main id="main-content">
@@ -114,12 +117,12 @@
                 </div>
             </div>
             
-            <div class="about-image reveal-on-scroll">
-                <div class="profile-wrapper">
-                    <img src="https://via.placeholder.com/400x400/2563eb/ffffff?text=PK" alt="Pronob Kumar" class="profile-img">
-                    <div class="profile-glow"></div>
-                </div>
-            </div>
+<div class="about-image reveal-on-scroll">
+    <div class="profile-wrapper">
+        <img src="assets/my-photo.jpg" alt="Pronob Kumar" class="profile-img">
+        <div class="profile-glow"></div>
+    </div>
+</div>
             </div>
     </div>
 </section>
@@ -166,7 +169,8 @@
         <section id="contact" class="section contact">
             <div class="container">
                 <div class="section-header reveal-on-scroll">
-                    <h2 class="section-title">Get In Touch</h2>
+                    <h2 class="section-title">Get In Touch</h2><br>
+                    <h4>Under construcion.</h4>
                 </div>
                 <div class="contact-content">
                     <div class="contact-info reveal-on-scroll">
