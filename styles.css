@@ -36,10 +36,15 @@
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
     
-    /* Transitions */
+    /* Transitions & Motion */
     --transition-fast: 150ms ease;
     --transition-base: 300ms ease;
     --transition-slow: 500ms ease;
+    /* Motion tokens for consistent easing and durations */
+    --motion-ease: cubic-bezier(.2,.9,.2,1);
+    --motion-quick: 120ms;
+    --motion-base: 300ms;
+    --motion-long: 600ms; 
     
     /* Shadows */
     --shadow-sm: 0 1px 3px var(--color-shadow);
@@ -1057,13 +1062,49 @@ a:hover {
 
 /* Project card subtle lift */
 .project-card {
-    transition: transform 450ms cubic-bezier(.2,.9,.2,1), box-shadow 450ms cubic-bezier(.2,.9,.2,1);
-    will-change: transform, box-shadow;
+    transition: transform var(--motion-base) var(--motion-ease), box-shadow var(--motion-base) var(--motion-ease), opacity var(--motion-base) var(--motion-ease);
+    will-change: transform, box-shadow, opacity;
 }
 
 .project-card.visible {
     opacity: 1;
     transform: translateY(0) translateZ(0);
+}
+
+/* Smooth animation helper for interactive elements */
+.animate-smooth .btn,
+.animate-smooth .nav-link,
+.animate-smooth .project-card,
+.animate-smooth .logo,
+.animate-smooth .theme-toggle,
+.animate-smooth .project-link,
+.animate-smooth .read-more {
+    transition: transform var(--motion-base) var(--motion-ease), box-shadow var(--motion-base) var(--motion-ease), background-color var(--motion-base) var(--motion-ease), opacity var(--motion-base) var(--motion-ease);
+    will-change: transform, opacity, background-color, box-shadow;
+}
+
+/* Button micro-interactions */
+.btn {
+    transition: transform var(--motion-quick) var(--motion-ease), box-shadow var(--motion-base) var(--motion-ease), background-color var(--motion-base) var(--motion-ease);
+}
+
+.btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Per-child stagger inside a staggered container */
+.stagger .stagger-child {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity var(--motion-base) var(--motion-ease), transform var(--motion-base) var(--motion-ease);
+    transition-delay: calc(var(--seq, 0) * 120ms + (var(--child, 0) * 80ms));
+    will-change: opacity, transform;
+}
+
+.loaded .stagger .stagger-child {
+    opacity: 1;
+    transform: none;
 }
 
 /* Respect user's reduced motion preferences */
@@ -1073,7 +1114,9 @@ a:hover {
     .fade-in,
     .project-card,
     .stagger,
-    .logo {
+    .logo,
+    .stagger-child,
+    .animate-smooth {
         animation: none !important;
         transition: none !important;
         transform: none !important;

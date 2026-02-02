@@ -251,11 +251,25 @@ function initPageStagger() {
     elements.forEach((el, i) => {
         el.style.setProperty('--seq', i);
         el.classList.add('stagger');
+
+        // assign per-child variables for nicer staggered entrance
+        const children = el.querySelectorAll(':scope > *');
+        children.forEach((c, j) => {
+            c.classList.add('stagger-child');
+            c.style.setProperty('--child', j);
+        });
     });
 
     // Ensure the logo will animate as well (small delay)
     const logo = document.querySelector('.logo');
-    if (logo) logo.style.setProperty('--seq', 0);
+    if (logo) {
+        logo.style.setProperty('--seq', 0);
+        logo.classList.add('stagger-child');
+        logo.style.setProperty('--child', 0);
+    }
+
+    // Add a global helper class to apply smooth transitions to interactive elements
+    document.body.classList.add('animate-smooth');
 } 
 
 /**
