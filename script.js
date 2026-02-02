@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add loaded class for CSS transitions
     document.body.classList.add('loaded');
-}
+});
 
 /**
  * vCard UI: sidebar toggle, navigation between articles, simple form enabling
@@ -63,8 +63,6 @@ function initVcardUI() {
         validate();
     });
 }
-
-});
 
 /**
  * Theme Management
