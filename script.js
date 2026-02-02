@@ -556,23 +556,35 @@ function initContactForm() {
         submitButton.disabled = true;
         
         try {
-            // Simulate API call (replace with actual endpoint)
-            await simulateFormSubmission(data);
-            
-            // Success
-            showFormFeedback('Message sent successfully! I\'ll get back to you soon.', 'success');
+            // Send to serverless endpoint
+            const response = await fetch('/api/send-contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: data.name,
+                    email: data.email,
+                    message: data.message,
+                    hp: data.hp || ''
+                })
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to send message');
+            }
+
+            showFormFeedback(result.message || 'Message sent successfully! I\'ll get back to you soon.', 'success');
             contactForm.reset();
-            
-            // Clear validation errors
+
+n            // Clear validation errors
             contactForm.querySelectorAll('.error-message').forEach(el => {
                 el.textContent = '';
             });
-            
+
         } catch (error) {
-            // Error
-            showFormFeedback('Something went wrong. Please try again later.', 'error');
+            showFormFeedback(error.message || 'Something went wrong. Please try again later.', 'error');
             console.error('Form submission error:', error);
-            
         } finally {
             // Reset button state
             submitButton.innerHTML = originalText;
@@ -595,30 +607,7 @@ function showFormFeedback(message, type) {
     }, 5000);
 }
 
-async function simulateFormSubmission(data) {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // In a real implementation, you would make a fetch request:
-    /*
-    const response = await fetch('https://api.example.com/contact', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-    
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    
-    return response.json();
-    */
-    
-    // For demo purposes, return a simulated response
-    return { success: true, message: 'Message received' };
-}
+// simulateFormSubmission removed — live endpoint now used (see api/send-contact.js for serverless implementation)
 
 /**
  * Utility Functions

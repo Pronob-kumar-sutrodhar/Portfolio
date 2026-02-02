@@ -66,7 +66,7 @@
                 <div class="hero-content stagger-wrapper">
                     <p class="hero-greeting fade-up">Hello, I'm</p>
                     <h1 class="hero-title fade-up delay-1">PRONOB KUMAR</h1>
-                    <h2 class="hero-subtitle fade-up delay-2">I am a <span class="txt-type" data-wait="2000" data-words='["Student", "Developer", "Problem Solver", "Creator"]'></span></h2>
+                    <h2 class="hero-subtitle fade-up delay-2">A Student and A Passionate Developer<span class="txt-type" data-wait="2000" data-words='["Student", "Developer", "Problem Solver", "Creator"]'></span></h2>
                     <p class="hero-description fade-up delay-3">
                         Building exceptional digital experiences that are fast, accessible, visually appealing, and responsive.
                     </p>
@@ -92,35 +92,57 @@
             </div>
         </section>
 
-        <section id="about" class="section about">
-            <div class="container">
-                <div class="section-header reveal-on-scroll">
-                    <h2 class="section-title">About Me</h2>
-                    <p class="section-subtitle">Get to know me better</p>
-                </div>
-                <div class="about-content">
-                    <div class="about-text reveal-on-scroll">
-                        <p>I'm a passionate developer with 2 years of experience creating web applications that solve real-world problems.</p>
-                        <p>I believe in writing clean, maintainable code. When I'm not coding, I enjoy contributing to open-source and writing technical blogs.</p>
-                        <div class="experience-highlights">
-                            <div class="highlight">
-                                <span class="highlight-number counter" data-target="5">0</span>
-                                <span class="highlight-text">Projects</span>
-                            </div>
-                            <div class="highlight">
-                                <span class="highlight-number counter" data-target="2">0</span>
-                                <span class="highlight-text">Years Exp.</span>
-                            </div>
-                        </div>
+<section id="about" class="section about">
+    <div class="container">
+        <div class="section-header reveal-on-scroll">
+            <h2 class="section-title">About Me</h2>
+            <p class="section-subtitle">Get to know me better</p>
+        </div>
+        <div class="about-content">
+            <div class="about-text reveal-on-scroll">
+                <p>I'm a passionate developer with 2 years of experience creating web applications that solve real-world problems.</p>
+                <p>I believe in writing clean, maintainable code. When I'm not coding, I enjoy contributing to open-source and writing technical blogs.</p>
+                <div class="experience-highlights">
+                    <div class="highlight">
+                        <span class="highlight-number counter" data-target="5">0</span>
+                        <span class="highlight-text">Projects</span>
                     </div>
-                    <div class="about-image reveal-on-scroll">
-                        <div class="image-wrapper">
-                            <div class="image-placeholder">👨‍💻</div>
-                        </div>
+                    <div class="highlight">
+                        <span class="highlight-number counter" data-target="2">0</span>
+                        <span class="highlight-text">Years Exp.</span>
                     </div>
                 </div>
             </div>
-        </section>
+            
+            <div class="about-image reveal-on-scroll">
+                <div class="profile-wrapper">
+                    <img src="https://via.placeholder.com/400x400/2563eb/ffffff?text=PK" alt="Pronob Kumar" class="profile-img">
+                    <div class="profile-glow"></div>
+                </div>
+            </div>
+            </div>
+    </div>
+</section>
+
+<section id="blog" class="section blog">
+    <div class="container">
+        <div class="section-header reveal-on-scroll">
+            <h2 class="section-title">My Blog</h2>
+        </div>
+        
+        <div class="coming-soon-card reveal-on-scroll">
+            <div class="soon-content">
+                <div class="soon-icon">✍️</div>
+                <h3> Coming Soon..........</h3>
+                <p>I'm crafting high-quality content about Web Development, Algorithms, and System Design. Stay tuned!</p>
+                
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
         <section id="projects" class="section projects">
             <div class="container">
@@ -178,8 +200,15 @@
                             <label for="message">Message</label>
                             <textarea id="message" name="message" rows="5" required></textarea>
                         </div>
+
+                        <!-- honeypot to trap bots (visually hidden but present in DOM) -->
+                        <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+                            <label for="hp">Leave this field empty</label>
+                            <input type="text" id="hp" name="hp" autocomplete="off" tabindex="-1" />
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Send Message ✉️</button>
-                        <div class="form-feedback"></div>
+                        <div class="form-feedback" role="status" aria-live="polite"></div>
                     </form>
                 </div>
             </div>
