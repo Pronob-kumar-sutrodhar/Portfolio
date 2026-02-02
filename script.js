@@ -1,7 +1,3 @@
-/**
- * Professional Portfolio Website - JavaScript
- * Production-ready vanilla JavaScript implementation
- */
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -188,13 +184,19 @@ function updateActiveNavOnScroll() {
  * Scroll Animations
  */
 function initScrollAnimations() {
-    // Add scroll effect to header
+    // Add scroll effect to header (use rAF to smooth toggling)
+    let lastKnownScroll = 0;
+    let ticking = false;
     window.addEventListener('scroll', () => {
-        const header = document.querySelector('.header');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        lastKnownScroll = window.scrollY;
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const header = document.querySelector('.header');
+                if (lastKnownScroll > 50) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+                ticking = false;
+            });
+            ticking = true;
         }
     });
 }
@@ -205,14 +207,15 @@ function initScrollAnimations() {
 function initIntersectionObserver() {
     const observerOptions = {
         root: null,
-        rootMargin: '0px',
-        threshold: 0.1
+        rootMargin: '0px 0px -5% 0px',
+        threshold: 0.12
     };
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+                // Use requestAnimationFrame to batch DOM writes for smoother paint
+                window.requestAnimationFrame(() => entry.target.classList.add('visible'));
             }
         });
     }, observerOptions);
@@ -301,24 +304,18 @@ function renderProjects() {
 const skillsData = {
     'Frontend': [
         { name: 'HTML5 & CSS3', level: 5 },
-        { name: 'JavaScript (ES6+)', level: 5 },
-        { name: 'React.js', level: 4 },
-        { name: 'Vue.js', level: 3 },
-        { name: 'TypeScript', level: 4 }
+        { name: 'JavaScript (ES6+)', level: 3 },
+        { name: 'TypeScript', level: 2 }
     ],
     'Backend': [
-        { name: 'Node.js', level: 4 },
-        { name: 'Express.js', level: 4 },
-        { name: 'Python', level: 3 },
-        { name: 'MongoDB', level: 4 },
-        { name: 'PostgreSQL', level: 3 }
+        { name: 'Node.js', level: 2 },
+        { name: 'Python', level: 4 }
+      
     ],
     'Tools & Others': [
         { name: 'Git & GitHub', level: 5 },
-        { name: 'Docker', level: 3 },
-        { name: 'AWS', level: 3 },
-        { name: 'Figma', level: 4 },
-        { name: 'Webpack', level: 4 }
+        { name: 'Docker', level: 3 }
+  
     ]
 };
 
