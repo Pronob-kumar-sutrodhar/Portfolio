@@ -1,0 +1,606 @@
+/**
+ * Professional Portfolio Website - JavaScript
+ * Production-ready vanilla JavaScript implementation
+ */
+
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all functionality
+    initTheme();
+    initMobileNavigation();
+    initSmoothScrolling();
+    initScrollAnimations();
+    initContactForm();
+    renderProjects();
+    renderSkills();
+    renderBlogPosts();
+    updateCurrentYear();
+    initIntersectionObserver();
+    
+    // Add loaded class for CSS transitions
+    document.body.classList.add('loaded');
+});
+
+/**
+ * Theme Management
+ */
+function initTheme() {
+    const themeToggle = document.querySelector('.theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // Get saved theme or use system preference
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = prefersDarkScheme.matches ? 'dark' : 'light';
+    const initialTheme = savedTheme || systemTheme;
+    
+    // Apply initial theme
+    setTheme(initialTheme);
+    
+    // Theme toggle event listener
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+    
+    // Listen for system theme changes
+    prefersDarkScheme.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+}
+
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Dispatch custom event for other components
+    document.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+    
+    // Update button aria-label
+    const themeToggle = document.querySelector('.theme-toggle');
+    const label = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+    themeToggle.setAttribute('aria-label', label);
+}
+
+/**
+ * Mobile Navigation
+ */
+function initMobileNavigation() {
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileNav = document.querySelector('.mobile-nav');
+    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+    
+    if (!menuToggle) return;
+    
+    menuToggle.addEventListener('click', () => {
+        const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        menuToggle.setAttribute('aria-expanded', !isExpanded);
+        mobileNav.classList.toggle('active');
+        mobileNav.setAttribute('aria-hidden', isExpanded);
+        
+        // Toggle body scroll
+        document.body.style.overflow = isExpanded ? '' : 'hidden';
+    });
+    
+    // Close menu when clicking on links
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            mobileNav.classList.remove('active');
+            mobileNav.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!mobileNav.contains(e.target) && !menuToggle.contains(e.target)) {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            mobileNav.classList.remove('active');
+            mobileNav.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            mobileNav.classList.remove('active');
+            mobileNav.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+/**
+ * Smooth Scrolling
+ */
+function initSmoothScrolling() {
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Skip if it's not an internal link
+            if (href === '#' || href.startsWith('#!')) return;
+            
+            e.preventDefault();
+            
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                // Update active nav link
+                updateActiveNavLink(href);
+                
+                // Smooth scroll to target
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = targetElement.offsetTop - headerHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Update URL without jumping
+                history.pushState(null, null, href);
+            }
+        });
+    });
+    
+    // Update active link on scroll
+    window.addEventListener('scroll', debounce(updateActiveNavOnScroll, 100));
+}
+
+function updateActiveNavLink(href) {
+    // Remove active class from all links
+    document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Add active class to clicked link
+    const activeLink = document.querySelector(`a[href="${href}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+}
+
+function updateActiveNavOnScroll() {
+    const sections = document.querySelectorAll('section[id]');
+    const scrollPosition = window.scrollY + 100;
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            updateActiveNavLink(`#${sectionId}`);
+        }
+    });
+}
+
+/**
+ * Scroll Animations
+ */
+function initScrollAnimations() {
+    // Add scroll effect to header
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('.header');
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+}
+
+/**
+ * Intersection Observer for animations
+ */
+function initIntersectionObserver() {
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all elements with fade-in class
+    document.querySelectorAll('.fade-in').forEach(element => {
+        observer.observe(element);
+    });
+}
+
+/**
+ * Projects Data & Rendering
+ */
+const projectsData = [
+    {
+        id: 1,
+        title: 'E-Commerce Platform',
+        description: 'A full-featured online shopping platform with cart, checkout, and payment integration.',
+        tech: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+        icon: '🛒'
+    },
+    {
+        id: 2,
+        title: 'Task Management App',
+        description: 'Collaborative task management application with real-time updates and team features.',
+        tech: ['Vue.js', 'Express', 'Socket.io', 'PostgreSQL'],
+        icon: '✅'
+    },
+    {
+        id: 3,
+        title: 'Weather Dashboard',
+        description: 'Real-time weather application with interactive maps and detailed forecasts.',
+        tech: ['JavaScript', 'API Integration', 'Chart.js', 'CSS Grid'],
+        icon: '🌤️'
+    },
+    {
+        id: 4,
+        title: 'Portfolio Website',
+        description: 'Responsive portfolio website with dark mode, animations, and contact form.',
+        tech: ['HTML5', 'CSS3', 'JavaScript', 'Netlify'],
+        icon: '💼'
+    },
+    {
+        id: 5,
+        title: 'Fitness Tracker',
+        description: 'Mobile-first fitness application with workout logging and progress tracking.',
+        tech: ['React Native', 'Firebase', 'Redux', 'Chart.js'],
+        icon: '💪'
+    },
+    {
+        id: 6,
+        title: 'Recipe Finder',
+        description: 'Recipe discovery app with ingredient search and meal planning features.',
+        tech: ['Next.js', 'Spoonacular API', 'Tailwind CSS', 'Vercel'],
+        icon: '🍳'
+    }
+];
+
+function renderProjects() {
+    const projectsGrid = document.querySelector('.projects-grid');
+    if (!projectsGrid) return;
+    
+    projectsGrid.innerHTML = projectsData.map(project => `
+        <article class="project-card fade-in">
+            <div class="project-image">
+                <span aria-hidden="true">${project.icon}</span>
+            </div>
+            <div class="project-content">
+                <h3 class="project-title">${project.title}</h3>
+                <p class="project-description">${project.description}</p>
+                <div class="project-tech">
+                    ${project.tech.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
+                </div>
+                <div class="project-links">
+                    <a href="#" class="project-link">View Project →</a>
+                    <a href="#" class="project-link">Source Code →</a>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+/**
+ * Skills Data & Rendering
+ */
+const skillsData = {
+    'Frontend': [
+        { name: 'HTML5 & CSS3', level: 5 },
+        { name: 'JavaScript (ES6+)', level: 5 },
+        { name: 'React.js', level: 4 },
+        { name: 'Vue.js', level: 3 },
+        { name: 'TypeScript', level: 4 }
+    ],
+    'Backend': [
+        { name: 'Node.js', level: 4 },
+        { name: 'Express.js', level: 4 },
+        { name: 'Python', level: 3 },
+        { name: 'MongoDB', level: 4 },
+        { name: 'PostgreSQL', level: 3 }
+    ],
+    'Tools & Others': [
+        { name: 'Git & GitHub', level: 5 },
+        { name: 'Docker', level: 3 },
+        { name: 'AWS', level: 3 },
+        { name: 'Figma', level: 4 },
+        { name: 'Webpack', level: 4 }
+    ]
+};
+
+function renderSkills() {
+    const skillsContainer = document.querySelector('.skills-container');
+    if (!skillsContainer) return;
+    
+    skillsContainer.innerHTML = Object.entries(skillsData).map(([category, skills]) => `
+        <div class="skill-category fade-in">
+            <h3>${category}</h3>
+            <ul class="skill-list">
+                ${skills.map(skill => `
+                    <li class="skill-item">
+                        <span class="skill-name">${skill.name}</span>
+                        <div class="skill-level" aria-label="Skill level: ${skill.level} out of 5">
+                            ${Array.from({ length: 5 }, (_, i) => 
+                                `<span class="level-dot ${i < skill.level ? 'filled' : ''}"></span>`
+                            ).join('')}
+                        </div>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `).join('');
+}
+
+/**
+ * Blog Posts Data & Rendering
+ */
+const blogPostsData = [
+    {
+        id: 1,
+        title: 'The Power of Semantic HTML',
+        date: '2024-03-15',
+        excerpt: 'Learn how semantic HTML improves accessibility, SEO, and maintainability of your web projects.',
+        icon: '📝'
+    },
+    {
+        id: 2,
+        title: 'Mastering CSS Grid',
+        date: '2024-03-10',
+        excerpt: 'A comprehensive guide to creating complex layouts with CSS Grid in modern web development.',
+        icon: '🎨'
+    },
+    {
+        id: 3,
+        title: 'JavaScript Performance Tips',
+        date: '2024-03-05',
+        excerpt: 'Optimize your JavaScript code for better performance and smoother user experiences.',
+        icon: '⚡'
+    },
+    {
+        id: 4,
+        title: 'Building Accessible Forms',
+        date: '2024-02-28',
+        excerpt: 'Best practices for creating forms that are usable by everyone, including people with disabilities.',
+        icon: '♿'
+    }
+];
+
+function renderBlogPosts() {
+    const blogPosts = document.querySelector('.blog-posts');
+    if (!blogPosts) return;
+    
+    blogPosts.innerHTML = blogPostsData.map(post => `
+        <article class="blog-post fade-in">
+            <div class="post-image">
+                <span aria-hidden="true">${post.icon}</span>
+            </div>
+            <div class="post-content">
+                <time datetime="${post.date}" class="post-date">
+                    ${new Date(post.date).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}
+                </time>
+                <h3 class="post-title">${post.title}</h3>
+                <p class="post-excerpt">${post.excerpt}</p>
+                <a href="#" class="read-more">Read Article →</a>
+            </div>
+        </article>
+    `).join('');
+}
+
+/**
+ * Contact Form Handling
+ */
+function initContactForm() {
+    const contactForm = document.getElementById('contact-form');
+    if (!contactForm) return;
+    
+    // Form validation
+    const validateField = (field) => {
+        const value = field.value.trim();
+        const errorElement = field.parentElement.querySelector('.error-message');
+        
+        if (field.required && !value) {
+            errorElement.textContent = 'This field is required';
+            field.setAttribute('aria-invalid', 'true');
+            return false;
+        }
+        
+        if (field.type === 'email' && value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                errorElement.textContent = 'Please enter a valid email address';
+                field.setAttribute('aria-invalid', 'true');
+                return false;
+            }
+        }
+        
+        errorElement.textContent = '';
+        field.setAttribute('aria-invalid', 'false');
+        return true;
+    };
+    
+    // Real-time validation
+    contactForm.querySelectorAll('input, textarea').forEach(field => {
+        field.addEventListener('input', () => validateField(field));
+        field.addEventListener('blur', () => validateField(field));
+    });
+    
+    // Form submission
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Validate all fields
+        const fields = contactForm.querySelectorAll('input, textarea');
+        const isValid = Array.from(fields).every(field => validateField(field));
+        
+        if (!isValid) {
+            showFormFeedback('Please fix the errors above', 'error');
+            return;
+        }
+        
+        // Get form data
+        const formData = new FormData(contactForm);
+        const data = Object.fromEntries(formData);
+        
+        // Show loading state
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        submitButton.innerHTML = 'Sending...';
+        submitButton.disabled = true;
+        
+        try {
+            // Simulate API call (replace with actual endpoint)
+            await simulateFormSubmission(data);
+            
+            // Success
+            showFormFeedback('Message sent successfully! I\'ll get back to you soon.', 'success');
+            contactForm.reset();
+            
+            // Clear validation errors
+            contactForm.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = '';
+            });
+            
+        } catch (error) {
+            // Error
+            showFormFeedback('Something went wrong. Please try again later.', 'error');
+            console.error('Form submission error:', error);
+            
+        } finally {
+            // Reset button state
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        }
+    });
+}
+
+function showFormFeedback(message, type) {
+    const feedbackElement = document.querySelector('.form-feedback');
+    if (!feedbackElement) return;
+    
+    feedbackElement.textContent = message;
+    feedbackElement.className = `form-feedback ${type}`;
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        feedbackElement.textContent = '';
+        feedbackElement.className = 'form-feedback';
+    }, 5000);
+}
+
+async function simulateFormSubmission(data) {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // In a real implementation, you would make a fetch request:
+    /*
+    const response = await fetch('https://api.example.com/contact', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    
+    return response.json();
+    */
+    
+    // For demo purposes, return a simulated response
+    return { success: true, message: 'Message received' };
+}
+
+/**
+ * Utility Functions
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function updateCurrentYear() {
+    const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+    }
+}
+
+/**
+ * Resume Download Handling
+ */
+document.addEventListener('click', (e) => {
+    if (e.target.closest('a[download]')) {
+        const link = e.target.closest('a[download]');
+        const fileName = link.getAttribute('download');
+        
+        // In a real implementation, you would have an actual PDF file
+        // For demo purposes, we'll create a placeholder
+        if (!link.getAttribute('href').includes('.pdf')) {
+            e.preventDefault();
+            
+            // Create and trigger download of a placeholder
+            const content = `Alex Morgan - Professional Resume\n\nContact: hello@alexmorgan.dev\nWebsite: alexmorgan.dev\n\nThis is a demo resume download. In a real implementation, this would be a PDF file.`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const tempLink = document.createElement('a');
+            tempLink.href = url;
+            tempLink.download = fileName;
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+            URL.revokeObjectURL(url);
+        }
+    }
+});
+
+/**
+ * Performance Optimizations
+ */
+// Preload critical images when page is idle
+if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => {
+        // Preload any critical images here
+        const images = document.querySelectorAll('img[data-src]');
+        images.forEach(img => {
+            img.src = img.getAttribute('data-src');
+            img.removeAttribute('data-src');
+        });
+    });
+}
+
+// Service Worker registration (optional)
+if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(error => {
+            console.log('Service Worker registration failed:', error);
+        });
+    });
+}
