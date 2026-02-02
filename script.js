@@ -13,9 +13,57 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCurrentYear();
     initIntersectionObserver();
     initPageStagger();
+    initVcardUI();
     
     // Add loaded class for CSS transitions
     document.body.classList.add('loaded');
+}
+
+/**
+ * vCard UI: sidebar toggle, navigation between articles, simple form enabling
+ */
+function initVcardUI() {
+    // Sidebar show/hide more
+    document.querySelectorAll('[data-sidebar-btn]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const more = document.querySelector('[data-sidebar-more]');
+            if (!more) return;
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', (!expanded).toString());
+            more.hidden = expanded; // toggle
+        });
+    });
+
+    // Navigation between articles
+    document.querySelectorAll('[data-nav-link]').forEach(link => {
+        link.addEventListener('click', () => {
+            const target = link.getAttribute('data-target');
+            if (!target) return;
+            // update active nav link
+            document.querySelectorAll('[data-nav-link]').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            // show target article
+            document.querySelectorAll('article[data-page]').forEach(a => {
+                if (a.getAttribute('data-page') === target) {
+                    a.hidden = false; a.classList.add('visible');
+                } else { a.hidden = true; a.classList.remove('visible'); }
+            });
+        });
+    });
+
+    // Enable submit when form inputs filled
+    document.querySelectorAll('[data-form]').forEach(form => {
+        const inputs = form.querySelectorAll('[data-form-input]');
+        const btn = form.querySelector('[data-form-btn]');
+        function validate() {
+            const ok = Array.from(inputs).every(i => i.value.trim() !== '');
+            if (btn) btn.disabled = !ok;
+        }
+        inputs.forEach(i => i.addEventListener('input', validate));
+        validate();
+    });
+}
+
 });
 
 /**

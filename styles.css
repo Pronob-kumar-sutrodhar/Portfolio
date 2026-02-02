@@ -1267,3 +1267,46 @@ a:hover {
         display: none;
     }
 }
+
+/* ==========================================================================
+   vCard / Sidebar Layout (merged)
+   ========================================================================== */
+.sidebar {
+    position: fixed;
+    left: 1.5rem;
+    top: 6.5rem;
+    width: 14rem;
+    background: linear-gradient(180deg, var(--color-bg-secondary), var(--color-bg));
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+n.sidebar-info { text-align: center; }
+.avatar-box img { border-radius: 50%; display:block; margin: 0 auto; }
+.info_content, .info-content { margin-top: .75rem; }
+.name { font-weight:700; color: var(--color-text); }
+.title { color: var(--color-text-light); font-size: .95rem; }
+.info_more-btn { margin-top: .75rem; background: transparent; border: 1px solid var(--color-border); padding: .5rem; border-radius: var(--radius-sm); cursor: pointer; }
+.sidebar-info_more { margin-top: .75rem; }
+.contacts-list { list-style: none; padding:0; margin:0; }
+.contact-item { display:flex; gap:.5rem; align-items:center; margin-bottom:.5rem; }
+.icon-box { width:2rem; height:2rem; display:flex; align-items:center; justify-content:center; background:var(--color-bg-tertiary); border-radius: .5rem; }
+.social-list { display:flex; gap:.5rem; justify-content:center; }
+
+.vcard-main { margin-left: 18rem; padding: var(--spacing-xl) 2rem; }
+.navbar { margin-bottom: var(--spacing-md); }
+.navbar-list { display:flex; gap: var(--spacing-md); list-style:none; }
+.navbar-link { background: transparent; border: none; cursor: pointer; padding: .5rem 1rem; border-radius: var(--radius-sm); }
+.navbar-link.active { background: var(--color-bg-secondary); border: 1px solid var(--color-border); }
+
+.article-title { margin-bottom: var(--spacing-sm); }
+.project-list { list-style:none; display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:var(--spacing-md); padding:0; }
+.project-item { background:var(--color-bg-secondary); padding: var(--spacing-md); border-radius: var(--radius-md); border:1px solid var(--color-border); }
+
+/* small screens adjustments */
+@media (max-width: 768px) {
+    .sidebar { position: static; width: auto; margin-bottom: var(--spacing-md); }
+    .vcard-main { margin-left: 0; padding: var(--spacing-md); }
+}
