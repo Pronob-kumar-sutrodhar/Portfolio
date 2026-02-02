@@ -260,7 +260,33 @@ a:hover {
 }
 
 .logo:hover {
-    transform: scale(1.05);
+    transform: scale(1.06) rotate(2deg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Logo entrance animation */
+@keyframes logoEntrance {
+    from { opacity: 0; transform: scale(.8) rotate(-8deg); }
+    to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+.loaded .logo {
+    animation: logoEntrance 700ms cubic-bezier(.2,.9,.2,1) both;
+    will-change: transform, opacity;
+}
+
+/* Page-wide staggered entrance */
+.stagger {
+    opacity: 0;
+    transform: translateY(12px) translateZ(0);
+    transition: opacity 600ms cubic-bezier(.2,.9,.2,1), transform 600ms cubic-bezier(.2,.9,.2,1);
+    will-change: opacity, transform;
+    transition-delay: calc(var(--seq, 0) * 120ms);
+}
+
+.loaded .stagger {
+    opacity: 1;
+    transform: none;
 }
 
 .nav-list {
@@ -1045,13 +1071,15 @@ a:hover {
     .placeholder-content,
     .hero-title,
     .fade-in,
-    .project-card {
+    .project-card,
+    .stagger,
+    .logo {
         animation: none !important;
         transition: none !important;
         transform: none !important;
         opacity: 1 !important;
     }
-}
+} 
 
 /* ==========================================================================
    Responsive Design

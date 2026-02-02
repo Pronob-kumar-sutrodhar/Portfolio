@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderBlogPosts();
     updateCurrentYear();
     initIntersectionObserver();
+    initPageStagger();
     
     // Add loaded class for CSS transitions
     document.body.classList.add('loaded');
@@ -225,6 +226,37 @@ function initIntersectionObserver() {
         observer.observe(element);
     });
 }
+
+/* Page entrance staggering: sets a --seq variable on header, sections, and footer so CSS can stagger the entrance */
+function initPageStagger() {
+    // Respect user preference for reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.stagger').forEach(el => {
+            el.style.opacity = 1;
+            el.style.transform = 'none';
+        });
+        document.querySelectorAll('.logo').forEach(logo => {
+            logo.style.opacity = 1;
+        });
+        return;
+    }
+
+    const elements = [];
+    const header = document.querySelector('.header');
+    if (header) elements.push(header);
+    document.querySelectorAll('main > section').forEach(s => elements.push(s));
+    const footer = document.querySelector('.footer');
+    if (footer) elements.push(footer);
+
+    elements.forEach((el, i) => {
+        el.style.setProperty('--seq', i);
+        el.classList.add('stagger');
+    });
+
+    // Ensure the logo will animate as well (small delay)
+    const logo = document.querySelector('.logo');
+    if (logo) logo.style.setProperty('--seq', 0);
+} 
 
 /**
  * Projects Data & Rendering
