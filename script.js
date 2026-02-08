@@ -336,30 +336,23 @@ function initPageStagger() {
 const projectsData = [
   {
     id: 1,
-    title: "E-Commerce Platform",
+    title: "Hospital Management system",
     description:
-      "A full-featured online shopping platform with cart, checkout, and payment integration.",
-    tech: ["React", "Node.js", "MongoDB", "Stripe"],
-    icon: "🛒",
+      "A full-featured reception system, checkout, and payment integration.",
+    tech: ["C++"],
+    icon: "🏥",
   },
   {
     id: 2,
-    title: "Task Management App",
+    title: "Lab report maker",
     description:
-      "Collaborative task management application with real-time updates and team features.",
-    tech: ["Vue.js", "Express", "Socket.io", "PostgreSQL"],
+      "Makes lab reports by taking only the input of the codes",
+    tech: ["HTML", "Typescript"],
     icon: "✅",
   },
+
   {
     id: 3,
-    title: "Weather Dashboard",
-    description:
-      "Real-time weather application with interactive maps and detailed forecasts.",
-    tech: ["JavaScript", "API Integration", "Chart.js", "CSS Grid"],
-    icon: "🌤️",
-  },
-  {
-    id: 4,
     title: "Portfolio Website",
     description:
       "Responsive portfolio website with dark mode, animations, and contact form.",
@@ -367,20 +360,20 @@ const projectsData = [
     icon: "💼",
   },
   {
-    id: 5,
-    title: "Fitness Tracker",
+    id: 4,
+    title: "Youtube video downloader ",
     description:
-      "Mobile-first fitness application with workout logging and progress tracking.",
-    tech: ["React Native", "Firebase", "Redux", "Chart.js"],
+      "Fast YT video downlader application.",
+    tech: ["HTML5", "Java script", "Typescriipt"],
     icon: "💪",
   },
   {
-    id: 6,
-    title: "Recipe Finder",
+    id: 5,
+    title: "Scecret messaging application",
     description:
-      "Recipe discovery app with ingredient search and meal planning features.",
-    tech: ["Next.js", "Spoonacular API", "Tailwind CSS", "Vercel"],
-    icon: "🍳",
+      "Messaging app for homies",
+    tech: ["Javascript", "CSS", "Vercel", "Render"],
+    icon: "💬",
   },
 ];
 
@@ -417,17 +410,18 @@ function renderProjects() {
  */
 const skillsData = {
   Frontend: [
-    { name: "HTML5 & CSS3", level: 5 },
-    { name: "JavaScript (ES6+)", level: 3 },
-    { name: "TypeScript", level: 2 },
+    { name: "HTML5 & CSS3", level: 4 },
+    { name: "JavaScript ", level: 2 },
+    { name: "TypeScript", level: 1 },
   ],
   Backend: [
-    { name: "Node.js", level: 2 },
+    { name: "Node.js", level: 1 },
     { name: "Python", level: 4 },
   ],
   "Tools & Others": [
     { name: "Git & GitHub", level: 5 },
     { name: "Docker", level: 3 },
+    { name: "C/C++", level: 5 },
   ],
 };
 
